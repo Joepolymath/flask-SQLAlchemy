@@ -1,7 +1,8 @@
 from enum import unique
-from flask import Flask
+from flask import Flask, redirect
 import os
 from flask import render_template
+from flask.helpers import url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask import request
 app = Flask(__name__)
@@ -29,17 +30,24 @@ class Book(db.Model):
     def __repr__(self):
         return "<Title: {}>".format(self.title)
 
-@app.route('/', methods=["GET", "POST"])
+
+@app.route('/')
 def home():
     # validating the content of the form. This condition shall be false if the request.form list is empty
-    if request.form:
-        title_from_form = request.form.get('title') # assigns the content of the title field to the variable
-        book = Book(title=title_from_form) # instance of the Book class. assigned to the 'book' variable
-        db.session.add(book) # adds the data to the session
-        db.session.commit() # this commits the data to the database
     books = Book.query.all() # this retrieves all the contents of the book table.
     return render_template('bookstore.html', iwe = books) # rendering the html page alongside the queried books to the browser.
 
+@app.route('/sub', methods=["GET", "POST"])
+def submitting():
+    if request.form:
+        twitter = request.form.get('ftitle') # assigns the content of the title field to the variable
+        book = Book(title=twitter) # instance of the Book class. assigned to the 'book' variable
+        db.session.add(book) # adds the data to the session
+        db.session.commit() # this commits the data to the database
+    return redirect(url_for('home'))
 # @app.route('/bookstore')
 # def bookstore():
 #     return render_template('bookstore.html')
+
+if __name__=="__main__":
+    app.run(debug=True)

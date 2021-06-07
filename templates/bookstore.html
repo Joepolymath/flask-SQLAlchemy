@@ -9,14 +9,22 @@
 <body>
     <h1>BOOKSTORE</h1>
     <!-- <a href="{{ url_for('home') }}">Home</a> -->
-    <form action="/" method="POST">
-        <input type="text" name="title">
-        <!-- <input type="text" name="message"> -->
+    <form action="/sub" method="POST">
+        <input type="text" name="ftitle">
+        <input type="text" name="fname">
+        <input type="text" name="fphone">
         <input type="submit" value="Add">
     </form>
     <h1>Books</h1>
-    {% for takada in iwe %}
-        <p>{{ takada.title }}</p>
-    {% endfor %}
+    <table border="1">
+        {% for takada in iwe %}
+        <tr>
+                <td>{{ takada.title }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    
+    
+    
 </body>
 </html>
