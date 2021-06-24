@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"> -->
 </head>
 <body>
     <h1>BOOKSTORE</h1>
@@ -12,7 +13,8 @@
     <form action="/sub" method="POST">
         <input type="text" name="ftitle">
         <input type="text" name="fname">
-        <input type="text" name="fphone">
+        <input type="email" name="email" placeholder="enter your email">
+
         <input type="submit" value="Add">
     </form>
     <h1>Books</h1>
@@ -20,6 +22,9 @@
         {% for takada in iwe %}
         <tr>
                 <td>{{ takada.title }}</td>
+                <td>{{ takada.email }}</td>
+                <td><a href="">Edit</a></td>
+                <td><a href="{{ url_for('confirm', email=takada.email) }}">Delete</a></td>
         </tr>
         {% endfor %}
     </table>

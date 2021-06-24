@@ -15,7 +15,7 @@ database_file = "sqlite:///{}".format(os.path.join(project_dir, "bookdatabase.db
 
 # connecting the database file (bookdatabase.db) to the sqlalchemy dependency.
 app.config["SQLALCHEMY_DATABASE_URI"] = database_file
-
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 # connecting this app.py file to the sqlalchemy
 db = SQLAlchemy(app)
 
@@ -25,8 +25,10 @@ db = SQLAlchemy(app)
 
 # creating a model for the book table in the diagram
 class Book(db.Model):
-    title = db.Column(db.String(80), unique = True, nullable = False, primary_key = True)
+    title = db.Column(db.String(80), unique = True, nullable = False)
+    email = db.Column(db.String(80), unique = True, nullable = False, primary_key = True)
     # message = db.Column(db.String(80), unique = True, nullable = False)
+    
     def __repr__(self):
         return "<Title: {}>".format(self.title)
 
@@ -41,13 +43,27 @@ def home():
 def submitting():
     if request.form:
         twitter = request.form.get('ftitle') # assigns the content of the title field to the variable
-        book = Book(title=twitter) # instance of the Book class. assigned to the 'book' variable
+        email = request.form.get('email')
+        book = Book(title=twitter, email = email) # instance of the Book class. assigned to the 'book' variable
         db.session.add(book) # adds the data to the session
         db.session.commit() # this commits the data to the database
     return redirect(url_for('home'))
 # @app.route('/bookstore')
 # def bookstore():
 #     return render_template('bookstore.html')
+@app.route('/delete/<email>')
+def deleteBooks(email):
+    user = Book.query.filter_by(email=email).first()
+    db.session.delete(user)
+    db.session.commit()
+    # return redirect('/')
+    return redirect('/')
+
+@app.route('/confirm<email>')
+def confirm(email):
+    selected_book = Book.query.filter_by(email=email).first()
+
+    return render_template('confirm.html', selected_book=selected_book)
 
 if __name__=="__main__":
     app.run(debug=True)
